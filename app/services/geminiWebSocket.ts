@@ -5,7 +5,9 @@ import { pcmToWav } from "../utils/audioUtils";
 const MODEL = "models/gemini-2.0-flash-exp";
 const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 const HOST = "generativelanguage.googleapis.com";
-const WS_URL = `wss://${HOST}/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${API_KEY}`;
+const WS_URL = `wss://${HOST}/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${API_KEY}`;
+const instruction =
+  "LS0tIFBBR0UgMSAtLS0NCg0KDQoNCg0KW3NvdXJjZTogMV0gUG9zaXNpIFNpa2F0IEdpZ2kNCltzb3VyY2U6IDJdIOKZoiBQb3NpdGlmDQpbc291cmNlOiAzXSBTaWthdCBnaWdpIG1pcmluZyAkNDVeXGNpcmNkeSg0NSkga2UgYXJhaCBndXNpLg0KW3NvdXJjZTogNF0g4pmjIE5lZ2F0aWYNCltzb3VyY2U6IDVdIFNpa2F0IGx1cnVzIG1lbmVrYW4ga2UgZ2lnaSAmIGd1c2kgdGVybGFsdSBrZXJhcy4NCltzb3VyY2U6IDZdIEdlcmFrYW4gTWVueWlrYXQNCltzb3VyY2U6IDddIOKZoiBQb3NpdGlmDQpbc291cmNlOiA4XSBHZXJha2FuIG1lbXV0YXIga2VjaWwgYXRhdSBuYWlrLXR1cnVuIHBlbmRlay4NCltzb3VyY2U6IDldIOKZoiBOZWdhdGlmDQpbc291cmNlOiAxMF0gR2VyYWthbiBtZW5kYXRhciBraXJpLWthbmFuIGNlcGF0ICYga2VyYXMuDQpbc291cmNlOiAxMV0gVXJ1dGFuIEJhZ2lhbiBHaWdpDQpbc291cmNlOiAxMl0gUG9zaXRpZg0KW3NvdXJjZTogMTNdIEdpZ2kgbHVhciBHaWdpIGRhbGFtIFBlcm11a2FhbiBrdW55YWgg4oaSExpkYWgNCltzb3VyY2U6IDE0XSBOZWdhdGlmDQpbc291cmNlOiAxNV0gTG9tcGF0LWxvbXBhdCBiYWdpYW4sIHRpZGFrIHRlcmF0dXIuDQoNCi0tLSBQQUdFIDIgLS0tDQoNCg0KW3NvdXJjZTogMTZdL00ZWlrYXQgTGlkYWgNCs2b3VyY2U6IDE3XSDimaIgUG9zaXRpZg0KW3NvdXJjZTogMThdIFNpa2F0IGxpZGFoIHBlbGFuIGRhcmkgYmVsYWthbmcga2UgZGVwYW4uDQogTmVnYXRpZg0KW3NvdXJjZTogMTldIFNpa2F0IGxpZGFoIHRlcmxhbHUga2VyYXMgYXRhdSB0aWRhayBkaXNpa2F0IHNhbWEgc2VrYWxpLg0KW3NvdXJjZTogMjBdIE1FTllJS0FUIExJREFIDQpbc291cmNlOiAyMV0gWA0KW3NvdXJjZTogMjJdIFNpa2F0IGxpZGFoIHBlbGFuDQpbc291cmNlOiAyM10gZGFyaSBiZWxha2FuZyBrZSBkZXBhbg0KW3NvdXJjZTogMjRdIFNpa2F0IGxpZGFoIHRlcmxhbHUga2VyYXMNCltzb3VyY2U6IDI1XSBhdGF1IHRpZGFrIGRpc2lrYXQNCltzb3VyY2U6IDI2XSBzYW1hIHNla2FsaQ==";
 
 export class GeminiWebSocket {
   private ws: WebSocket | null = null;
@@ -94,6 +96,14 @@ export class GeminiWebSocket {
         model: MODEL,
         generation_config: {
           response_modalities: ["AUDIO"],
+          speechConfig: { languageCode: "id-ID" },
+        },
+        system_instruction: {
+          parts: [
+            {
+              text: `Anda adalah dokter gigi yang selalu merespons dalam Bahasa Indonesia dengan mengikuti intruksi ${instruction}. anda bukan asisten gigi dan mulut tapi fitur sigi brush contoh respon : halo kamu ingin sikat gigi dengan benar kan mari ikuti langkah yang aku berikan.anggap ini itu bukan video tapi kita seperti teman yang berbicara dengan Anda. pertama tama tolong sapa dulu, jangan menunggu saya menyapa anda`,
+            },
+          ],
         },
       },
     };
